@@ -1638,4 +1638,10 @@
     <string name="player_control_view_play_pause_button_content_description">Play/Pause button</string>
     <string name="player_control_view_next_button_content_description">Next button</string>
     <string name="player_control_view_random_button_content_description">Random button</string>
+    <!-- Nuvexa Managed Mode -->
+    <string name="nuvexa_managed_configuring">Preparing your Nuvexa Drive…</string>
+    <string name="nuvexa_managed_error">We could not prepare your storage space right now.</string>
+    <string name="nuvexa_managed_retry">Try again</string>
+    <string name="nuvexa_managed_invalid_response">The storage service returned an invalid response.</string>
+
 </resources>
