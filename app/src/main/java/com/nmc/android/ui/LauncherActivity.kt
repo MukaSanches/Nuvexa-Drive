@@ -105,7 +105,9 @@ class LauncherActivity : BaseActivity() {
         }
 
         managedProvisioningStarted = true
-        Snackbar.make(binding.root, R.string.nuvexa_managed_configuring, Snackbar.LENGTH_INDEFINITE).show()
+        binding.splashScreenBold.visibility = View.GONE
+        binding.splashScreenNormal.visibility = View.VISIBLE
+        binding.splashScreenNormal.text = getString(R.string.nuvexa_managed_configuring)
 
         lifecycleScope.launch {
             try {
