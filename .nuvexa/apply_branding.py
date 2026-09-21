@@ -234,6 +234,89 @@ def patch_setup() -> None:
     for old, new in replacements.items():
         replace_exact(path, old, new)
 
+    # Runtime links and onboarding must identify Nuvexa rather than silently
+    # presenting upstream product channels as Nuvexa services.
+    runtime_replacements = {
+        '<bool name="show_provider_or_own_installation">true</bool>':
+            '<bool name="show_provider_or_own_installation">false</bool>',
+        '<string name="provider_registration_server">https://www.nextcloud.com/register</string>':
+            '<string name="provider_registration_server"></string>',
+        '<string name="url_help">https://help.nextcloud.com/c/clients/android/</string>':
+            '<string name="url_help">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/README.md</string>',
+        '<string name="privacy_url">https://nextcloud.com/privacy</string>':
+            '<string name="privacy_url">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/PRIVACY.md</string>',
+        '<string name="license_url" translatable="false">https://www.gnu.org/licenses/gpl-2.0.html</string>':
+            '<string name="license_url" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/LICENSE.txt</string>',
+        '<string name="contributing_link" translatable="false">https://github.com/nextcloud/android/blob/master/CONTRIBUTING.md</string>':
+            '<string name="contributing_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/CONTRIBUTING.md</string>',
+        '<string name="osm_geocoder_contact" translatable="false">android@nextcloud.com</string>':
+            '<string name="osm_geocoder_contact" translatable="false"></string>',
+        '<string name="dev_changelog">https://github.com/nextcloud/android/raw/dev/CHANGELOG.md</string>':
+            '<string name="dev_changelog">https://raw.githubusercontent.com/MukaSanches/Nuvexa-Drive/main/CHANGELOG.md</string>',
+    }
+    for old, new in runtime_replacements.items():
+        replace_exact(path, old, new)
+
+    # Never reuse upstream package/provider identities in Nuvexa development
+    # variants. Those variants must be independently installable.
+    qa = APP / "src/qa/res/values/setup.xml"
+    qa_text = qa.read_text(encoding="utf-8")
+    qa_replacements = {
+        "Nextcloud QA": "Nuvexa Drive QA",
+        "nextcloud.qa": "com.nuvexa.drive.qa",
+        "org.nextcloud.qa.provider": "com.nuvexa.drive.qa.provider",
+        "org.nextcloud.qa.android.providers.UsersAndGroupsSearchProvider": "com.nuvexa.drive.qa.providers.UsersAndGroupsSearchProvider",
+        "org.nextcloud.qa.documents": "com.nuvexa.drive.qa.documents",
+        "org.nextcloud.qa.files": "com.nuvexa.drive.qa.files",
+        "org.nextcloud.qa.android.providers.imageCache": "com.nuvexa.drive.qa.imagecache.provider",
+        "https://github.com/nextcloud/android/commits/master": "https://github.com/MukaSanches/Nuvexa-Drive/commits/main",
+        "android@nextcloud.com": "",
+    }
+    for old, new in qa_replacements.items():
+        qa_text = qa_text.replace(old, new)
+    qa.write_text(qa_text, encoding="utf-8")
+
+    dev = APP / "src/versionDev/res/values/setup.xml"
+    dev_text = dev.read_text(encoding="utf-8")
+    dev_replacements = {
+        "Nextcloud Dev": "Nuvexa Drive Dev",
+        "nextcloud.beta": "com.nuvexa.drive.beta",
+        "org.nextcloud.beta.provider": "com.nuvexa.drive.beta.provider",
+        "org.nextcloud.beta.android.providers.UsersAndGroupsSearchProvider": "com.nuvexa.drive.beta.providers.UsersAndGroupsSearchProvider",
+        "org.nextcloud.beta.documents": "com.nuvexa.drive.beta.documents",
+        "org.nextcloud.beta.files": "com.nuvexa.drive.beta.files",
+        "org.nextcloud.beta.android.providers.imageCache": "com.nuvexa.drive.beta.imagecache.provider",
+        "https://github.com/nextcloud/android/commits/master": "https://github.com/MukaSanches/Nuvexa-Drive/commits/main",
+        "android@nextcloud.com": "",
+    }
+    for old, new in dev_replacements.items():
+        dev_text = dev_text.replace(old, new)
+    dev.write_text(dev_text, encoding="utf-8")
+
+    # The Play flavor must not ship another project's Firebase identity.
+    # An authorized Nuvexa Firebase/push project is required before enabling
+    # Play-channel push. Generic/GitHub releases do not depend on these values.
+    gplay = APP / "src/gplay/res/values/setup.xml"
+    gplay_text = gplay.read_text(encoding="utf-8")
+    import re
+    for resource in (
+        "push_server_url",
+        "default_web_client_id",
+        "firebase_database_url",
+        "gcm_defaultSenderId",
+        "google_api_key",
+        "google_app_id",
+        "google_crash_reporting_api_key",
+        "google_storage_bucket",
+        "project_id",
+    ):
+        gplay_text = re.sub(
+            rf'(<string name="{resource}"[^>]*>).*?(</string>)',
+            rf'\\1\\2',
+            gplay_text,
+        )
+    gplay.write_text(gplay_text, encoding="utf-8")
+
 
 def write_docs() -> None:
     write(
