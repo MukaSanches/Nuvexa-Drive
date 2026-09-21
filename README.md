@@ -21,11 +21,15 @@ Current baseline includes file browsing, upload/download, folders, search, favor
 
 Nuvexa must never silently lose, corrupt, endlessly retransmit or duplicate a file because of network loss, process death or restart. Every Nuvexa-specific reliability change must be covered by an appropriate regression test before it is described as complete.
 
+Implemented Nuvexa-specific hardening currently includes an active-transfer Network Guard that re-checks Wi-Fi-only, charging-only and power-saver policy while an upload is actually transferring data, with unit regression coverage.
+
 See RELIABILITY.md and TESTING.md.
 
-## Build
+## Build and release integrity
 
-The project currently targets Android API 36 and is built with Java 21. See BUILDING.md.
+The project currently targets Android API 36 and is built with Java 21. Release CI runs unit tests and lint before assembling the release artifact. Production artifacts use one stable Nuvexa signing identity; the private key is intentionally kept outside this public repository and the public certificate fingerprint is documented in SIGNING.md.
+
+See BUILDING.md and SIGNING.md.
 
 ## Source and licensing
 
