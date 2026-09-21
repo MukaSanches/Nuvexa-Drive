@@ -33,6 +33,19 @@ Nuvexa Drive is based on Nextcloud Android. Original copyright/SPDX notices and 
 
 See LICENSE.txt, LICENSES/, REUSE.toml and THIRD_PARTY_NOTICES.md.
 
+## Reliability hardening in 1.0
+
+The Nuvexa hardening branch adds explicit data-integrity gates on top of the inherited transfer engine:
+
+- post-upload remote size verification before destructive local actions;
+- protection against a non-empty source being accepted as a zero-byte/truncated remote copy;
+- temporary-download size verification before promotion to the final destination;
+- Wi-Fi-only policy re-evaluated while an upload is active;
+- regression tests for upload verification, download promotion and network-policy transitions;
+- independent Nuvexa QA/Dev provider identities and removal of upstream Firebase credentials from the Play flavor.
+
+These changes remain subject to CI, device/server regression testing and release validation before 1.0 is marked approved.
+
 ## Status
 
 The repository is in the Nuvexa 1.0 hardening phase. Documentation distinguishes implemented inherited functionality from Nuvexa-specific work still requiring validation; a feature is not considered done merely because it compiles.
