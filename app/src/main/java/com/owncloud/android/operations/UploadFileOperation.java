@@ -786,10 +786,32 @@ public class UploadFileOperation extends SyncOperation {
         }
     }
 
-    private RemoteOperationResult performE2EUpload(E2EClientData data) throws OperationCancelledException {
-        for (OnDatatransferProgressListener mDataTransferListener : mDataTransferListeners) {
-            mUploadOperation.addDataTransferProgressListener(mDataTransferListener);
+    /**
+     * Attaches progress listeners plus Nuvexa's in-flight network guard.
+     * Wi-Fi-only is enforced while bytes are moving, not only at startup.
+     */
+    private void attachTransferListenersAndNetworkGuard() {
+        for (OnDatatransferProgressListener dataTransferListener : mDataTransferListeners) {
+            mUploadOperation.addDataTransferProgressListener(dataTransferListener);
         }
+
+        mUploadOperation.addDataTransferProgressListener(
+            (progressRate, totalTransferredSoFar, totalToTransfer, filePath) -> {
+                if (!mOnWifiOnly) {
+                    return;
+                }
+
+                Connectivity connectivity = connectivityService.getConnectivity();
+                if (!connectivity.isWifi() || connectivity.isMetered()) {
+                    Log_OC.w(TAG, "Wi-Fi-only policy changed during upload; pausing: " + getRemotePath());
+                    mUploadOperation.cancel(ResultCode.DELAYED_FOR_WIFI);
+                }
+            }
+        );
+    }
+
+    private RemoteOperationResult performE2EUpload(E2EClientData data) throws OperationCancelledException {
+        attachTransferListenersAndNetworkGuard();
 
         if (mCancellationRequested.get()) {
             throw new OperationCancelledException();
@@ -1159,9 +1181,7 @@ public class UploadFileOperation extends SyncOperation {
                  * Adds the onTransferProgress in FileUploadWorker
                  * {@link FileUploadWorker#onTransferProgress(long, long, long, String)()}
                  */
-                for (OnDatatransferProgressListener mDataTransferListener : mDataTransferListeners) {
-                    mUploadOperation.addDataTransferProgressListener(mDataTransferListener);
-                }
+                attachTransferListenersAndNetworkGuard();
 
                 if (mCancellationRequested.get()) {
                     Log_OC.e(TAG, "upload operation cancelled");
