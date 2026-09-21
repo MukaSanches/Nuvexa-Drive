@@ -62,6 +62,7 @@ import com.owncloud.android.operations.e2e.E2EData;
 import com.owncloud.android.operations.e2e.E2EFiles;
 import com.owncloud.android.operations.upload.RemoteFileExistence;
 import com.owncloud.android.operations.upload.UploadVerificationPolicy;
+import com.owncloud.android.operations.upload.TransferNetworkPolicy;
 import com.owncloud.android.operations.upload.UploadFileException;
 import com.owncloud.android.operations.upload.UploadFileOperationExtensionsKt;
 import com.owncloud.android.utils.EncryptionUtils;
@@ -802,7 +803,7 @@ public class UploadFileOperation extends SyncOperation {
                 }
 
                 Connectivity connectivity = connectivityService.getConnectivity();
-                if (!connectivity.isWifi() || connectivity.isMetered()) {
+                if (!TransferNetworkPolicy.INSTANCE.canTransfer(true, connectivity.isWifi(), connectivity.isMetered())) {
                     Log_OC.w(TAG, "Wi-Fi-only policy changed during upload; pausing: " + getRemotePath());
                     mUploadOperation.cancel(ResultCode.DELAYED_FOR_WIFI);
                 }
@@ -1039,7 +1040,7 @@ public class UploadFileOperation extends SyncOperation {
 
         // check that connectivity conditions are met and delays the upload otherwise
         Connectivity connectivity = connectivityService.getConnectivity();
-        if (mOnWifiOnly && (!connectivity.isWifi() || connectivity.isMetered())) {
+        if (!TransferNetworkPolicy.INSTANCE.canTransfer(mOnWifiOnly, connectivity.isWifi(), connectivity.isMetered())) {
             Log_OC.d(TAG, "Upload delayed until WiFi is available: " + getRemotePath());
             remoteOperationResult = new RemoteOperationResult(ResultCode.DELAYED_FOR_WIFI);
         }
