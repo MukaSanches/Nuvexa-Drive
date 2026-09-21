@@ -486,14 +486,25 @@ class FileUploadWorker(
         totalToTransfer: Long,
         fileAbsoluteName: String
     ) {
+        val currentUploadFileOperation =
+            activeOperations.values.find { it.originalStoragePath == fileAbsoluteName }
+
+        val policyBlockReason = currentUploadFileOperation?.let(::activeTransferPolicyBlockReason)
+        if (policyBlockReason != null) {
+            Log_OC.w(
+                TAG,
+                "Pausing active upload because transfer policy changed: $policyBlockReason, " +
+                    "path=${currentUploadFileOperation.remotePath}"
+            )
+            currentUploadFileOperation.cancel(policyBlockReason)
+            return
+        }
+
         val percent = getPercent(totalTransferredSoFar, totalToTransfer)
         val currentTime = System.currentTimeMillis()
 
         if (percent != lastPercent && (currentTime - lastUpdateTime) >= minProgressUpdateInterval) {
             notificationManager.run {
-                val currentUploadFileOperation =
-                    activeOperations.values.find { it.originalStoragePath == fileAbsoluteName }
-
                 val accountName = currentUploadFileOperation?.user?.accountName
                 val remotePath = currentUploadFileOperation?.remotePath
 
@@ -518,5 +529,30 @@ class FileUploadWorker(
         }
 
         lastPercent = percent
+    }
+
+    /**
+     * Re-checks transfer constraints while bytes are actively flowing.
+     *
+     * Android can switch transports after WorkManager starts a worker. A Wi-Fi-only upload must not
+     * continue over a metered/cellular network merely because it began on Wi-Fi. The same rule applies
+     * to charging-only uploads and automatic uploads that should respect power saver.
+     */
+    private fun activeTransferPolicyBlockReason(operation: UploadFileOperation): ResultCode? {
+        val connectivity = connectivityService.connectivity
+
+        if (operation.isWifiRequired && (!connectivity.isWifi || connectivity.isMetered)) {
+            return ResultCode.DELAYED_FOR_WIFI
+        }
+
+        if (operation.isChargingRequired && !powerManagementService.battery.isCharging) {
+            return ResultCode.DELAYED_FOR_CHARGING
+        }
+
+        if (!operation.isIgnoringPowerSaveMode && powerManagementService.isPowerSavingEnabled) {
+            return ResultCode.DELAYED_IN_POWER_SAVE_MODE
+        }
+
+        return null
     }
 }
