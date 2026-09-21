@@ -538,21 +538,13 @@ class FileUploadWorker(
      * continue over a metered/cellular network merely because it began on Wi-Fi. The same rule applies
      * to charging-only uploads and automatic uploads that should respect power saver.
      */
-    private fun activeTransferPolicyBlockReason(operation: UploadFileOperation): ResultCode? {
-        val connectivity = connectivityService.connectivity
-
-        if (operation.isWifiRequired && (!connectivity.isWifi || connectivity.isMetered)) {
-            return ResultCode.DELAYED_FOR_WIFI
-        }
-
-        if (operation.isChargingRequired && !powerManagementService.battery.isCharging) {
-            return ResultCode.DELAYED_FOR_CHARGING
-        }
-
-        if (!operation.isIgnoringPowerSaveMode && powerManagementService.isPowerSavingEnabled) {
-            return ResultCode.DELAYED_IN_POWER_SAVE_MODE
-        }
-
-        return null
-    }
+    private fun activeTransferPolicyBlockReason(operation: UploadFileOperation): ResultCode? =
+        TransferPolicyGuard.blockingReason(
+            wifiRequired = operation.isWifiRequired,
+            chargingRequired = operation.isChargingRequired,
+            ignorePowerSave = operation.isIgnoringPowerSaveMode,
+            connectivity = connectivityService.connectivity,
+            battery = powerManagementService.battery,
+            powerSavingEnabled = powerManagementService.isPowerSavingEnabled
+        )
 }
