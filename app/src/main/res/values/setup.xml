@@ -29,8 +29,8 @@
 
     <!-- URLs and flags related -->
     <bool name="show_server_url_input">true</bool>
-    <bool name="show_provider_or_own_installation">true</bool>
-    <string name="provider_registration_server">https://www.nextcloud.com/register</string>
+    <bool name="show_provider_or_own_installation">false</bool>
+    <string name="provider_registration_server"></string>
 
     <!-- specify built in proxy -->
     <string name="proxy_host"></string>
@@ -85,16 +85,16 @@
     <bool name="show_hidden_files_enabled">true</bool>
     <bool name="davdroid_integration_enabled">true</bool>
     <bool name="help_enabled">false</bool>
-    <string name="url_help">https://help.nextcloud.com/c/clients/android/</string>
+    <string name="url_help">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/README.md</string>
     <bool name="privacy_enabled">false</bool>
-    <string name="privacy_url">https://nextcloud.com/privacy</string>
+    <string name="privacy_url">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/PRIVACY.md</string>
     <bool name="imprint_enabled">false</bool>
     <bool name="recommend_enabled">false</bool>
     <bool name="logger_enabled">false</bool>
     <bool name="sourcecode_enabled">true</bool>
     <string name="sourcecode_url" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive</string>
     <bool name="license_enabled">true</bool>
-    <string name="license_url" translatable="false">https://www.gnu.org/licenses/gpl-2.0.html</string>
+    <string name="license_url" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/LICENSE.txt</string>
     <string name="url_imprint"></string>
     <string name="url_app_download">https://github.com/MukaSanches/Nuvexa-Drive/releases</string>
     <string name="url_server_install">https://nextcloud.com/install</string>
@@ -112,13 +112,13 @@
     <!-- Determine is participate enabled -->
     <bool name="participate_enabled">false</bool>
     <!-- Participate links -->
-    <string name="fdroid_beta_link" translatable="false">https://f-droid.org/repository/browse/?fdid=com.nextcloud.android.beta</string>
-    <string name="beta_apk_link" translatable="false">https://download.nextcloud.com/android/dev/latest.apk</string>
-    <string name="play_store_register_beta" translatable="false">https://play.google.com/apps/testing/com.nextcloud.client</string>
-    <string name="fdroid_link" translatable="false">https://f-droid.org/repository/browse/?fdid=com.nextcloud.client</string>
-    <string name="help_link" translatable="false">https://help.nextcloud.com/c/clients/android</string>
+    <string name="fdroid_beta_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/releases</string>
+    <string name="beta_apk_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/releases</string>
+    <string name="play_store_register_beta" translatable="false"></string>
+    <string name="fdroid_link" translatable="false"></string>
+    <string name="help_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/README.md</string>
     <string name="translation_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive</string>
-    <string name="contributing_link" translatable="false">https://github.com/nextcloud/android/blob/master/CONTRIBUTING.md</string>
+    <string name="contributing_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/blob/main/CONTRIBUTING.md</string>
     <!-- For semi-automated bug report creation -->
     <string name="report_issue_link" translatable="false">https://github.com/MukaSanches/Nuvexa-Drive/issues/new</string>
     <!-- For manual report from user -->
@@ -146,13 +146,13 @@
 
     <!-- Geocoding -->
     <string name="osm_geocoder_url" translatable="false">https://nominatim.openstreetmap.org/</string>
-    <string name="osm_geocoder_contact" translatable="false">android@nextcloud.com</string>
+    <string name="osm_geocoder_contact" translatable="false"></string>
 
 
     <!-- Dev settings -->
-    <string name="dev_link">https://download.nextcloud.com/android/dev/nextcloud-dev-</string>
-    <string name="dev_latest">https://download.nextcloud.com/android/dev/latest</string>
-    <string name="dev_changelog">https://github.com/nextcloud/android/raw/dev/CHANGELOG.md</string>
+    <string name="dev_link">https://github.com/MukaSanches/Nuvexa-Drive/releases/download/</string>
+    <string name="dev_latest">https://github.com/MukaSanches/Nuvexa-Drive/releases/latest</string>
+    <string name="dev_changelog">https://raw.githubusercontent.com/MukaSanches/Nuvexa-Drive/main/CHANGELOG.md</string>
 
     <string name="buildNumber" translatable="false"></string>
 </resources>
