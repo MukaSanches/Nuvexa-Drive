@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: nuvexa-bootstrap-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   bootstrap-build:
@@ -22,30 +22,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Record workflow run
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .nuvexa/ci
-          cat > .nuvexa/ci/latest-run.json <<EOF
-          {
-            "run_id": "$GITHUB_RUN_ID",
-            "run_attempt": "$GITHUB_RUN_ATTEMPT",
-            "workflow": "$GITHUB_WORKFLOW",
-            "commit": "$GITHUB_SHA",
-            "status": "running",
-            "signed": false,
-            "run_url": "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          }
-          EOF
-          git config user.name "Nuvexa Build Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add .nuvexa/ci/latest-run.json
-          if ! git diff --cached --quiet; then
-            git commit -m "ci: record Nuvexa build run [skip ci]"
-            git push origin HEAD:main
-          fi
 
       - name: Import stable Nextcloud Android baseline
         id: import
@@ -120,16 +96,19 @@ jobs:
           set -euo pipefail
           ./gradlew --no-daemon :app:assembleGenericRelease
 
-      - name: Prepare aligned unsigned APK
+      - name: Prepare aligned unsigned APK and verification tooling
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p dist
+          mkdir -p dist/tools
           APK="$(find app/build/outputs/apk/generic/release -type f -name '*.apk' | head -n1)"
           test -n "$APK"
           ZIPALIGN="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name zipalign | sort -V | tail -n1)"
+          APKSIGNER_JAR="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -path '*/lib/apksigner.jar' | sort -V | tail -n1)"
           test -x "$ZIPALIGN"
+          test -f "$APKSIGNER_JAR"
           "$ZIPALIGN" -f -p 4 "$APK" dist/Nuvexa-Drive-1.0.0-aligned-unsigned.apk
+          cp "$APKSIGNER_JAR" dist/tools/apksigner.jar
           sha256sum dist/Nuvexa-Drive-1.0.0-aligned-unsigned.apk > dist/Nuvexa-Drive-1.0.0-aligned-unsigned.apk.sha256
 
       - name: Sign and verify production APK when signing secrets exist
@@ -189,36 +168,6 @@ jobs:
             gh release upload "$TAG" dist/Nuvexa-Drive-1.0.0.apk dist/Nuvexa-Drive-1.0.0.apk.sha256 dist/signing-certificate-sha256.txt --clobber
           else
             gh release create "$TAG" dist/Nuvexa-Drive-1.0.0.apk dist/Nuvexa-Drive-1.0.0.apk.sha256 dist/signing-certificate-sha256.txt --target "$GITHUB_SHA" --title "Nuvexa Drive 1.0.0" --notes-file "$RUNNER_TEMP/release-notes.md"
-          fi
-
-      - name: Record final build result
-        if: always()
-        shell: bash
-        env:
-          BUILD_STATUS: ${{ job.status }}
-          SIGNED_RESULT: ${{ steps.sign.outputs.signed }}
-        run: |
-          set -euo pipefail
-          SIGNED="${SIGNED_RESULT:-false}"
-          mkdir -p .nuvexa/ci
-          cat > .nuvexa/ci/latest-run.json <<EOF
-          {
-            "run_id": "$GITHUB_RUN_ID",
-            "run_attempt": "$GITHUB_RUN_ATTEMPT",
-            "workflow": "$GITHUB_WORKFLOW",
-            "commit": "$GITHUB_SHA",
-            "status": "$BUILD_STATUS",
-            "signed": $SIGNED,
-            "run_url": "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          }
-          EOF
-          git config user.name "Nuvexa Build Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add .nuvexa/ci/latest-run.json
-          if ! git diff --cached --quiet; then
-            git commit -m "ci: record Nuvexa build result [skip ci]"
-            git pull --rebase origin main
-            git push origin HEAD:main
           fi
 
       - name: Upload build artifact
