@@ -13,18 +13,14 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch demo landing page
+      - name: Inspect official demo provisioning flow
         shell: bash
         run: |
           set -euo pipefail
-          curl -fsSL -D /tmp/headers.txt https://try.nextcloud.com/ -o /tmp/index.html
-          echo '--- HEADERS ---'
-          cat /tmp/headers.txt
-          echo '--- FORM/ACTION/SCRIPT LINES ---'
-          grep -Eio '<form[^>]*>|action="[^"]+"|src="[^"]+\.js[^"]*"|href="[^"]+\.js[^"]*"' /tmp/index.html | head -100 || true
-          echo '--- HTML ---'
-          sed -n '1,220p' /tmp/index.html
-          echo '--- ACCESS ---'
-          curl -fsSL -D /tmp/access-headers.txt https://try.nextcloud.com/access -o /tmp/access.html || true
-          cat /tmp/access-headers.txt || true
-          sed -n '1,260p' /tmp/access.html || true
+          rm -f /tmp/cookies.txt
+          curl -fsSL -c /tmp/cookies.txt -b /tmp/cookies.txt https://try.nextcloud.com/ -o /tmp/index.html
+          curl -fsSL -c /tmp/cookies.txt -b /tmp/cookies.txt https://try.nextcloud.com/js/main.js -o /tmp/main.js
+          echo '--- MAIN.JS ---'
+          sed -n '1,320p' /tmp/main.js
+          echo '--- ENDPOINT CANDIDATES ---'
+          grep -Eo "['\"][^'\"]*(create|demo|access|instance|api|register|provision)[^'\"]*['\"]" /tmp/main.js | head -200 || true
