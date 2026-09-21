@@ -70,6 +70,20 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
 
+      - name: Configure Gradle memory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.gradle"
+          cat > "$HOME/.gradle/gradle.properties" <<'EOF'
+          org.gradle.jvmargs=-Xmx5g -Dfile.encoding=UTF-8 -XX:+UseParallelGC -XX:MaxMetaspaceSize=1g
+          kotlin.daemon.jvmargs=-Xmx4g -XX:+UseParallelGC
+          org.gradle.workers.max=2
+          org.gradle.daemon=false
+          org.gradle.caching=true
+          org.gradle.configuration-cache=true
+          EOF
+
       - name: Unit tests and lint
         shell: bash
         run: |
