@@ -1,0 +1,30 @@
+name: Inspect Nextcloud Demo API
+
+on:
+  push:
+    paths:
+      - '.github/workflows/inspect-nextcloud-demo.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch demo landing page
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL -D /tmp/headers.txt https://try.nextcloud.com/ -o /tmp/index.html
+          echo '--- HEADERS ---'
+          cat /tmp/headers.txt
+          echo '--- FORM/ACTION/SCRIPT LINES ---'
+          grep -Eio '<form[^>]*>|action="[^"]+"|src="[^"]+\.js[^"]*"|href="[^"]+\.js[^"]*"' /tmp/index.html | head -100 || true
+          echo '--- HTML ---'
+          sed -n '1,220p' /tmp/index.html
+          echo '--- ACCESS ---'
+          curl -fsSL -D /tmp/access-headers.txt https://try.nextcloud.com/access -o /tmp/access.html || true
+          cat /tmp/access-headers.txt || true
+          sed -n '1,260p' /tmp/access.html || true
