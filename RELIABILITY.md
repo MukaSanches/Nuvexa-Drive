@@ -29,4 +29,10 @@ The policy decision is isolated in `TransferPolicyGuard` and unit tests cover:
 - automatic upload blocked in power saver;
 - explicit user upload allowed to ignore power saver when configured by the existing upload semantics.
 
+### Two-phase non-E2EE upload verification
+
+After the transport reports success, Nuvexa re-reads the remote object and requires the remote byte length to match the local source before destructive local behavior is allowed. Verification is retried briefly to tolerate small metadata-consistency delays. A missing, zero-byte or truncated remote object is not accepted as a committed backup.
+
+The verification policy has unit regression coverage for exact-size success, non-empty source versus zero-byte remote, truncated remote data, valid empty files and unknown negative lengths.
+
 These items are requirements. Individual mechanisms are only marked implemented after code and regression tests exist.
