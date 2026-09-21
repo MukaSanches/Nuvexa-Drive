@@ -1,9 +1,10 @@
 /*
- * Nextcloud - Android Client
+ * Nuvexa Drive
  *
  * SPDX-FileCopyrightText: 2023 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2023-2024 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2026 Nuvexa contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later OR GPL-2.0-only
  */
 package com.nmc.android.ui
@@ -15,32 +16,27 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.nextcloud.client.preferences.AppPreferences
-import com.nextcloud.utils.mdm.MDMConfig
+import com.nuvexa.localserver.LocalDriveActivity
 import com.owncloud.android.R
-import com.owncloud.android.authentication.AuthenticatorActivity
 import com.owncloud.android.databinding.ActivitySplashBinding
-import com.owncloud.android.ui.activity.BaseActivity
-import com.owncloud.android.ui.activity.FileDisplayActivity
-import com.owncloud.android.ui.activity.SettingsActivity
-import javax.inject.Inject
 
-class LauncherActivity : BaseActivity() {
-
+/**
+ * Nuvexa launcher.
+ *
+ * Nuvexa 1.0 opens the self-hosted local-drive mode directly. No external
+ * Nextcloud installation, server URL, account or login is required to reach
+ * the primary product experience.
+ */
+class LauncherActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Mandatory to call this before super method to show system launch screen for api level 31+
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
 
         binding = ActivitySplashBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
         updateTitleVisibility()
         scheduleSplashScreen()
@@ -50,7 +46,6 @@ class LauncherActivity : BaseActivity() {
     fun setSplashTitles(boldText: String, normalText: String) {
         binding.splashScreenBold.visibility = View.VISIBLE
         binding.splashScreenNormal.visibility = View.VISIBLE
-
         binding.splashScreenBold.text = boldText
         binding.splashScreenNormal.text = normalText
     }
@@ -65,21 +60,16 @@ class LauncherActivity : BaseActivity() {
     }
 
     private fun scheduleSplashScreen() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (user.isPresent) {
-                if (MDMConfig.enforceProtection(this) && appPreferences.lockPreference == SettingsActivity.LOCK_NONE) {
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                } else {
-                    startActivity(Intent(this, FileDisplayActivity::class.java))
-                }
-            } else {
-                startActivity(Intent(this, AuthenticatorActivity::class.java))
-            }
-            finish()
-        }, SPLASH_DURATION)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                startActivity(Intent(this, LocalDriveActivity::class.java))
+                finish()
+            },
+            SPLASH_DURATION
+        )
     }
 
     companion object {
-        const val SPLASH_DURATION = 1500L
+        const val SPLASH_DURATION = 900L
     }
 }

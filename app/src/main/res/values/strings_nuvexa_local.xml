@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nuvexa_local_title">Nuvexa Local</string>
+    <string name="nuvexa_local_subtitle">Your phone is the server. Files stay on this device and can be accessed by other devices on the same local network.</string>
+    <string name="nuvexa_local_server_running">Local server active</string>
+    <string name="nuvexa_local_server_starting">Starting local server…</string>
+    <string name="nuvexa_local_server_error">Local server error: %1$s</string>
+    <string name="nuvexa_local_server_no_address">Local address not available yet.</string>
+    <string name="nuvexa_local_copy_address">Copy address</string>
+    <string name="nuvexa_local_import">Import files</string>
+    <string name="nuvexa_local_new_folder">New folder</string>
+    <string name="nuvexa_local_rotate_token">New access key</string>
+    <string name="nuvexa_local_stop_server">Stop server</string>
+    <string name="nuvexa_local_storage_summary">%1$s stored locally\n%2$s</string>
+    <string name="nuvexa_local_files">Files on this phone</string>
+    <string name="nuvexa_local_empty">No files yet. Import files here or send them from another device using the local address above.</string>
+    <string name="nuvexa_local_delete">Delete</string>
+    <string name="nuvexa_local_address_copied">Local address copied.</string>
+    <string name="nuvexa_local_token_rotated">Access key changed. Previous links are no longer valid.</string>
+    <string name="nuvexa_local_folder_name">Folder name</string>
+    <string name="nuvexa_local_invalid_name">Invalid name.</string>
+    <string name="nuvexa_local_folder_created">Folder created.</string>
+    <string name="nuvexa_local_folder_not_created">Could not create the folder.</string>
+    <string name="nuvexa_local_delete_confirm">Delete “%1$s” from this phone?</string>
+    <string name="nuvexa_local_deleted">Item deleted.</string>
+    <string name="nuvexa_local_delete_failed">Could not delete the item.</string>
+    <string name="nuvexa_local_server_channel">Nuvexa Local server</string>
+    <string name="nuvexa_local_server_channel_description">Keeps the Nuvexa file server available to devices on the local network.</string>
+    <string name="nuvexa_local_server_notification_title">Nuvexa Local is active</string>
+    <string name="nuvexa_local_server_notification_text">This phone is serving Nuvexa files on the local network.</string>
+    <string name="nuvexa_local_server_stop">Stop</string>
+    <plurals name="nuvexa_local_imported_files">
+        <item quantity="one">%d file imported.</item>
+        <item quantity="other">%d files imported.</item>
+    </plurals>
+</resources>

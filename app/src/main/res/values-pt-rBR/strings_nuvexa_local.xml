@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nuvexa_local_title">Nuvexa Local</string>
+    <string name="nuvexa_local_subtitle">O próprio celular é o servidor. Os arquivos ficam neste aparelho e podem ser acessados por outros dispositivos na mesma rede local.</string>
+    <string name="nuvexa_local_server_running">Servidor local ativo</string>
+    <string name="nuvexa_local_server_starting">Iniciando servidor local…</string>
+    <string name="nuvexa_local_server_error">Erro no servidor local: %1$s</string>
+    <string name="nuvexa_local_server_no_address">Endereço local ainda indisponível.</string>
+    <string name="nuvexa_local_copy_address">Copiar endereço</string>
+    <string name="nuvexa_local_import">Importar arquivos</string>
+    <string name="nuvexa_local_new_folder">Nova pasta</string>
+    <string name="nuvexa_local_rotate_token">Nova chave de acesso</string>
+    <string name="nuvexa_local_stop_server">Parar servidor</string>
+    <string name="nuvexa_local_storage_summary">%1$s armazenados localmente\n%2$s</string>
+    <string name="nuvexa_local_files">Arquivos neste celular</string>
+    <string name="nuvexa_local_empty">Ainda não há arquivos. Importe arquivos aqui ou envie de outro dispositivo pelo endereço local acima.</string>
+    <string name="nuvexa_local_delete">Excluir</string>
+    <string name="nuvexa_local_address_copied">Endereço local copiado.</string>
+    <string name="nuvexa_local_token_rotated">Chave de acesso alterada. Os links anteriores deixaram de funcionar.</string>
+    <string name="nuvexa_local_folder_name">Nome da pasta</string>
+    <string name="nuvexa_local_invalid_name">Nome inválido.</string>
+    <string name="nuvexa_local_folder_created">Pasta criada.</string>
+    <string name="nuvexa_local_folder_not_created">Não foi possível criar a pasta.</string>
+    <string name="nuvexa_local_delete_confirm">Excluir “%1$s” deste celular?</string>
+    <string name="nuvexa_local_deleted">Item excluído.</string>
+    <string name="nuvexa_local_delete_failed">Não foi possível excluir o item.</string>
+    <string name="nuvexa_local_server_channel">Servidor Nuvexa Local</string>
+    <string name="nuvexa_local_server_channel_description">Mantém o servidor de arquivos do Nuvexa disponível para dispositivos da rede local.</string>
+    <string name="nuvexa_local_server_notification_title">Nuvexa Local está ativo</string>
+    <string name="nuvexa_local_server_notification_text">Este celular está servindo os arquivos do Nuvexa na rede local.</string>
+    <string name="nuvexa_local_server_stop">Parar</string>
+    <plurals name="nuvexa_local_imported_files">
+        <item quantity="one">%d arquivo importado.</item>
+        <item quantity="other">%d arquivos importados.</item>
+    </plurals>
+</resources>
