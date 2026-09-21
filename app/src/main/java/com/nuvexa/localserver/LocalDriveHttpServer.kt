@@ -453,11 +453,11 @@ class LocalDriveHttpServer(
         buildString {
             value.forEach { char ->
                 when (char) {
-                    '\\\\' -> append("\\\\\\\\")
-                    '"' -> append("\\\\\"")
-                    '\n' -> append("\\\\n")
-                    '\r' -> append("\\\\r")
-                    '\t' -> append("\\\\t")
+                    '\\' -> append("\\\\")
+                    '"' -> append("\\\"")
+                    '\n' -> append("\\n")
+                    '\r' -> append("\\r")
+                    '\t' -> append("\\t")
                     else -> if (char.code < 32) append('?') else append(char)
                 }
             }
