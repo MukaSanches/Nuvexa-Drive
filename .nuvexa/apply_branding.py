@@ -30,7 +30,7 @@ def decode_brand_asset() -> Path:
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(base64.b64decode(source.read_text(encoding="ascii").strip()))
     write(
-        target.with_suffix(target.suffix + ".license"),
+        ROOT / "branding" / "Nuvexa-Brand-LICENSE.txt",
         """SPDX-FileCopyrightText: 2026 Nuvexa Drive
 SPDX-License-Identifier: LicenseRef-Nuvexa-Brand
 """,
