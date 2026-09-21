@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-FileCopyrightText: 2021 TSI-mc
+  ~ SPDX-FileCopyrightText: 2021 Nextcloud GmbH
+  ~ SPDX-License-Identifier: GPL-2.0-only AND (AGPL-3.0-or-later OR GPL-2.0-only)
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/standard_padding"
+    android:background="@color/bg_default">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/menu_share_advanced_permissions"
+        style="@style/Widget.App.Button.BottomSheetItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:contentDescription="@string/share_settings"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        android:text="@string/share_settings"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/bottom_sheet_text_size"
+        app:icon="@drawable/ic_edit"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/standard_padding"
+        app:iconSize="@dimen/iconized_single_line_item_icon_size"
+        app:iconTint="@color/primary" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/menu_share_send_new_email"
+        style="@style/Widget.App.Button.BottomSheetItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:contentDescription="@string/share_send_new_email"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        android:text="@string/share_send_new_email"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/bottom_sheet_text_size"
+        app:icon="@drawable/ic_email"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/standard_padding"
+        app:iconSize="@dimen/iconized_single_line_item_icon_size"
+        app:iconTint="@color/primary" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/menu_share_send_link"
+        style="@style/Widget.App.Button.BottomSheetItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:contentDescription="@string/share_via_link_send_link_label"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        android:text="@string/share_via_link_send_link_label"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/bottom_sheet_text_size"
+        android:visibility="gone"
+        app:icon="@drawable/ic_link"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/standard_padding"
+        app:iconSize="@dimen/iconized_single_line_item_icon_size"
+        app:iconTint="@color/primary"
+        tools:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/menu_share_unshare"
+        style="@style/Widget.App.Button.BottomSheetItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:contentDescription="@string/delete_link"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        android:text="@string/delete_link"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/bottom_sheet_text_size"
+        app:icon="@drawable/ic_delete"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/standard_padding"
+        app:iconSize="@dimen/iconized_single_line_item_icon_size"
+        app:iconTint="@color/primary" />
+
+</LinearLayout>

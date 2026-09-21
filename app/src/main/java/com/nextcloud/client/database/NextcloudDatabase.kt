@@ -1,0 +1,158 @@
+/*
+ * Nextcloud - Android Client
+ *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
+ * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH
+ * SPDX-License-Identifier: AGPL-3.0-or-later OR GPL-2.0-only
+ */
+package com.nextcloud.client.database
+
+import android.content.Context
+import androidx.room.AutoMigration
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.nextcloud.client.core.Clock
+import com.nextcloud.client.core.ClockImpl
+import com.nextcloud.client.database.dao.ArbitraryDataDao
+import com.nextcloud.client.database.dao.AssistantDao
+import com.nextcloud.client.database.dao.CapabilityDao
+import com.nextcloud.client.database.dao.FileDao
+import com.nextcloud.client.database.dao.FileSystemDao
+import com.nextcloud.client.database.dao.OfflineOperationDao
+import com.nextcloud.client.database.dao.RecommendedFileDao
+import com.nextcloud.client.database.dao.ShareDao
+import com.nextcloud.client.database.dao.SyncedFolderDao
+import com.nextcloud.client.database.dao.UploadDao
+import com.nextcloud.client.database.entity.ArbitraryDataEntity
+import com.nextcloud.client.database.entity.AssistantEntity
+import com.nextcloud.client.database.entity.CapabilityEntity
+import com.nextcloud.client.database.entity.ExternalLinkEntity
+import com.nextcloud.client.database.entity.FileEntity
+import com.nextcloud.client.database.entity.FilesystemEntity
+import com.nextcloud.client.database.entity.OfflineOperationEntity
+import com.nextcloud.client.database.entity.RecommendedFileEntity
+import com.nextcloud.client.database.entity.ShareEntity
+import com.nextcloud.client.database.entity.SyncedFolderEntity
+import com.nextcloud.client.database.entity.UploadEntity
+import com.nextcloud.client.database.entity.VirtualEntity
+import com.nextcloud.client.database.migrations.DatabaseMigrationUtil
+import com.nextcloud.client.database.migrations.MIGRATION_88_89
+import com.nextcloud.client.database.migrations.MIGRATION_97_98
+import com.nextcloud.client.database.migrations.MIGRATION_99_100
+import com.nextcloud.client.database.migrations.Migration67to68
+import com.nextcloud.client.database.migrations.RoomMigration
+import com.nextcloud.client.database.migrations.addLegacyMigrations
+import com.nextcloud.client.database.typeConverter.OfflineOperationTypeConverter
+import com.owncloud.android.MainApp
+import com.owncloud.android.db.ProviderMeta
+
+@Database(
+    entities = [
+        ArbitraryDataEntity::class,
+        CapabilityEntity::class,
+        ExternalLinkEntity::class,
+        FileEntity::class,
+        FilesystemEntity::class,
+        ShareEntity::class,
+        SyncedFolderEntity::class,
+        UploadEntity::class,
+        VirtualEntity::class,
+        OfflineOperationEntity::class,
+        RecommendedFileEntity::class,
+        AssistantEntity::class
+    ],
+    version = ProviderMeta.DB_VERSION,
+    autoMigrations = [
+        AutoMigration(from = 65, to = 66),
+        AutoMigration(from = 66, to = 67),
+        AutoMigration(from = 68, to = 69),
+        AutoMigration(from = 69, to = 70),
+        AutoMigration(from = 70, to = 71, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 71, to = 72),
+        AutoMigration(from = 72, to = 73),
+        AutoMigration(from = 73, to = 74, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 74, to = 75),
+        AutoMigration(from = 75, to = 76),
+        AutoMigration(from = 76, to = 77),
+        AutoMigration(from = 77, to = 78),
+        AutoMigration(from = 78, to = 79, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 79, to = 80),
+        AutoMigration(from = 80, to = 81),
+        AutoMigration(from = 81, to = 82),
+        AutoMigration(from = 82, to = 83),
+        AutoMigration(from = 83, to = 84),
+        AutoMigration(from = 84, to = 85, spec = DatabaseMigrationUtil.DeleteColumnSpec::class),
+        AutoMigration(from = 85, to = 86, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 86, to = 87, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 87, to = 88, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        // manual migration used for 88 to 89
+        AutoMigration(from = 89, to = 90),
+        AutoMigration(from = 90, to = 91),
+        AutoMigration(from = 91, to = 92),
+        AutoMigration(from = 92, to = 93, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 93, to = 94, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 94, to = 95, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 95, to = 96),
+        AutoMigration(from = 96, to = 97, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        // manual migration used for 97 to 98
+        AutoMigration(from = 98, to = 99),
+        // manual migration used for 99 to 100
+        AutoMigration(from = 100, to = 101, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 101, to = 102, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 102, to = 103, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class),
+        AutoMigration(from = 103, to = 104),
+        AutoMigration(from = 104, to = 105),
+        AutoMigration(from = 105, to = 106, spec = DatabaseMigrationUtil.ResetCapabilitiesPostMigration::class)
+    ],
+    exportSchema = true
+)
+@Suppress("Detekt.UnnecessaryAbstractClass") // needed by Room
+@TypeConverters(OfflineOperationTypeConverter::class)
+abstract class NextcloudDatabase : RoomDatabase() {
+
+    abstract fun arbitraryDataDao(): ArbitraryDataDao
+    abstract fun fileDao(): FileDao
+    abstract fun offlineOperationDao(): OfflineOperationDao
+    abstract fun uploadDao(): UploadDao
+    abstract fun recommendedFileDao(): RecommendedFileDao
+    abstract fun fileSystemDao(): FileSystemDao
+    abstract fun syncedFolderDao(): SyncedFolderDao
+    abstract fun assistantDao(): AssistantDao
+    abstract fun shareDao(): ShareDao
+    abstract fun capabilityDao(): CapabilityDao
+
+    companion object {
+        const val FIRST_ROOM_DB_VERSION = 65
+        private var instance: NextcloudDatabase? = null
+
+        @JvmStatic
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated("Here for legacy purposes, inject this class or use getInstance(context, clock) instead")
+        fun getInstance(context: Context): NextcloudDatabase = getInstance(context, ClockImpl())
+
+        @JvmStatic
+        fun getInstance(context: Context, clock: Clock): NextcloudDatabase {
+            if (instance == null) {
+                instance = Room
+                    .databaseBuilder(context, NextcloudDatabase::class.java, ProviderMeta.DB_NAME)
+                    .allowMainThreadQueries()
+                    .addTypeConverter(OfflineOperationTypeConverter())
+                    .addLegacyMigrations(clock, context)
+                    .addMigrations(RoomMigration())
+                    .addMigrations(Migration67to68())
+                    .addMigrations(MIGRATION_88_89)
+                    .addMigrations(MIGRATION_97_98)
+                    .addMigrations(MIGRATION_99_100)
+                    .build()
+            }
+            return instance!!
+        }
+
+        @Suppress("DEPRECATION")
+        @JvmStatic
+        fun instance(): NextcloudDatabase = getInstance(MainApp.getAppContext())
+    }
+}

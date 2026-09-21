@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
+  ~ SPDX-License-Identifier: AGPL-3.0-or-later
+  -->
+<com.google.android.material.button.MaterialButton android:id="@+id/add_public_share"
+    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+    android:layout_width="wrap_content"
+    android:layout_marginStart="@dimen/standard_half_margin"
+    android:layout_marginTop="@dimen/standard_half_margin"
+    android:layout_height="@dimen/minimum_size_for_touchable_area"
+    android:text="@string/create_end_to_end_encrypted_share"
+    app:icon="@drawable/ic_plus"
+    android:textColor="@color/text_color"
+    app:iconPadding="@dimen/standard_half_padding"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

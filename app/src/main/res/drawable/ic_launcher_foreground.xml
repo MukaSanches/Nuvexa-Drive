@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Nuvexa Drive -->
+<!-- SPDX-License-Identifier: LicenseRef-Nuvexa-Brand -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="92dp"
+        android:height="92dp"
+        android:gravity="center">
+        <bitmap
+            android:gravity="fill"
+            android:src="@drawable/nuvexa_logo" />
+    </item>
+</layer-list>

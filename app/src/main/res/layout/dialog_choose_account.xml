@@ -1,0 +1,142 @@
+<!--
+  ~ Nextcloud - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2020 Infomaniak Network SA
+  ~ SPDX-License-Identifier: AGPL-3.0-or-later OR GPL-2.0-only
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.nextcloud.ui.ChooseAccountDialogFragment">
+
+    <include
+        android:id="@+id/current_account"
+        layout="@layout/account_item"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/account_item_layout_height"
+        android:layout_margin="@dimen/standard_quarter_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/statusView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_half_padding"
+        android:paddingEnd="@dimen/zero"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/current_account"
+        tools:visibility="visible">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/online_status"
+            style="@style/Nextcloud.Material.TextButton"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/online_status_item_height"
+            android:ellipsize="middle"
+            android:padding="@dimen/zero"
+            android:paddingStart="@dimen/standard_half_padding"
+            android:paddingEnd="@dimen/standard_half_padding"
+            android:text="@string/set_online_status"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/fontAppbar"
+            app:icon="@drawable/media3_icon_check_circle_unfilled"
+            app:iconGravity="start"
+            app:iconPadding="@dimen/standard_half_padding"
+            app:iconTint="@color/fontAppbar" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/status_message"
+            style="@style/Nextcloud.Material.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/online_status_item_height"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:padding="@dimen/zero"
+            android:paddingStart="@dimen/standard_half_padding"
+            android:paddingEnd="@dimen/standard_half_padding"
+            android:text="@string/status_message"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/fontAppbar"
+            app:icon="@drawable/chat_bubble"
+            app:iconGravity="start"
+            app:iconPadding="@dimen/standard_half_padding"
+            app:iconTint="@color/fontAppbar" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator_line"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/standard_quarter_margin"
+        android:background="@color/list_divider_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/accounts_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/account_action_button_vertical_margin"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/add_account"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_line" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_account"
+        style="@style/Nextcloud.Material.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/account_action_button_height"
+        android:layout_marginStart="@dimen/account_action_button_margin"
+        android:layout_marginEnd="@dimen/account_action_button_margin"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="@string/prefs_add_account"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/fontAppbar"
+        app:icon="@drawable/ic_account_plus"
+        app:iconGravity="start"
+        app:iconPadding="22dp"
+        app:iconTint="@color/fontAppbar"
+        app:layout_constraintBottom_toTopOf="@+id/manage_accounts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/manage_accounts"
+        style="@style/Nextcloud.Material.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/account_action_button_height"
+        android:layout_marginStart="@dimen/account_action_button_margin"
+        android:layout_marginEnd="@dimen/account_action_button_margin"
+        android:layout_marginBottom="@dimen/account_action_button_margin"
+        android:paddingStart="12dp"
+        android:paddingEnd="0dp"
+        android:text="@string/prefs_manage_accounts"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/fontAppbar"
+        app:icon="@drawable/ic_settings"
+        app:iconGravity="start"
+        app:iconPadding="20dp"
+        app:iconTint="@color/fontAppbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-FileCopyrightText: 2021 Tobias Kaminsky <tobias@kaminsky.me>
+  ~ SPDX-License-Identifier: AGPL-3.0-or-later OR GPL-2.0-only
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Used for document scanning, but lib declares it as required, which it's not -->
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="false"
+        tools:node="replace" />
+
+    <application
+        android:name=".MainApp"
+        android:fullBackupContent="@xml/backup_config"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:manageSpaceActivity="com.owncloud.android.ui.activity.ManageSpaceActivity"
+        android:theme="@style/Theme.ownCloud.Toolbar">
+    </application>
+
+</manifest>
