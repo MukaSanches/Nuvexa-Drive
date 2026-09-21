@@ -13,49 +13,9 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Create one official temporary trial and inspect response
+      - name: Inspect current official demo autologin JavaScript
         shell: bash
         run: |
           set -euo pipefail
-          rm -f /tmp/cookies.txt
-          curl -fsSL -c /tmp/cookies.txt -b /tmp/cookies.txt https://try.nextcloud.com/ -o /tmp/index.html
-          python3 - <<'PY' > /tmp/form.txt
-          import html, re
-          s=open('/tmp/index.html',encoding='utf-8').read()
-          fields={}
-          for name in ('csrf-name-key','csrf-value-key','csrf-name','csrf-value'):
-              m=re.search(r'name="'+re.escape(name)+r'"\s+value="([^"]+)"',s)
-              if not m: raise SystemExit('missing '+name)
-              fields[name]=html.unescape(m.group(1))
-          print(fields['csrf-name-key']+'='+fields['csrf-name'])
-          print(fields['csrf-value-key']+'='+fields['csrf-value'])
-          PY
-          name_pair="$(sed -n '1p' /tmp/form.txt)"
-          value_pair="$(sed -n '2p' /tmp/form.txt)"
-          name_key="${name_pair%%=*}"
-          name_val="${name_pair#*=}"
-          value_key="${value_pair%%=*}"
-          value_val="${value_pair#*=}"
-          curl -fsSL -c /tmp/cookies.txt -b /tmp/cookies.txt \
-            -H 'Content-Type: application/x-www-form-urlencoded' \
-            --data-urlencode "${name_key}=${name_val}" \
-            --data-urlencode "${value_key}=${value_val}" \
-            https://try.nextcloud.com/index.php/short-term -o /tmp/response.json
-          echo '--- RESPONSE ---'
-          cat /tmp/response.json
-          echo
-          python3 - <<'PY'
-          import json, urllib.request
-          d=json.load(open('/tmp/response.json'))
-          print('url=', d.get('url'))
-          u=d.get('url')
-          if u:
-              req=urllib.request.Request(u, method='GET')
-              with urllib.request.urlopen(req, timeout=30) as r:
-                  print('final_url=', r.geturl())
-                  body=r.read(100000).decode('utf-8','replace')
-                  for line in body.splitlines():
-                      low=line.lower()
-                      if any(k in low for k in ('username','password','demo','login','expires','hour')):
-                          print(line[:1000])
-          PY
+          curl -fsSL 'https://demo1.nextcloud.com/apps/demo/js/autologin.js' -o /tmp/autologin.js
+          sed -n '1,240p' /tmp/autologin.js
