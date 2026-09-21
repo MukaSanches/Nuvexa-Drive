@@ -11,15 +11,23 @@
     <bool name="dev_version_direct_download_enabled">false</bool>
 
     <!-- App name  and other strings-->
-    <string name="app_name">Nextcloud QA</string>
-    <string name="account_type">nextcloud.qa</string>     <!-- better if was a domain name; but changing it now would require migrate accounts when the app is updated -->
-    <string name="authority">org.nextcloud.qa.provider</string>    <!-- better if was the app package with ".provider" appended ; it identifies the provider -->
-    <string name="users_and_groups_search_authority">org.nextcloud.qa.android.providers.UsersAndGroupsSearchProvider</string>
-    <string name="users_and_groups_share_with">org.nextcloud.qa.android.providers.UsersAndGroupsSearchProvider.action.SHARE_WITH</string>
-    <string name="document_provider_authority">org.nextcloud.qa.documents</string>
-    <string name="file_provider_authority">org.nextcloud.qa.files</string>
-    <string name="image_cache_provider_authority">org.nextcloud.qa.android.providers.imageCache</string>
-    <string name="default_display_name_for_root_folder">Nextcloud QA</string>
+    <string name="app_name">Nuvexa Drive</string>
+    <string name="account_type">com.nuvexa.drive.qa</string>     <!-- better if was a domain name; but changing it now would require migrate accounts when the app is updated -->
+    <string name="authority">com.nuvexa.drive.qa.provider</string>    <!-- better if was the app package with ".provider" appended ; it identifies the provider -->
+    <string name="users_and_groups_search_authority">com.nuvexa.drive.qa.providers.UsersAndGroupsSearchProvider</string>
+    <string name="users_and_groups_share_with">com.nuvexa.drive.qa.providers.UsersAndGroupsSearchProvider.action.SHARE_WITH</string>
+    <string name="document_provider_authority">com.nuvexa.drive.qa.documents</string>
+    <string name="file_provider_authority">com.nuvexa.drive.qa.files</string>
+    <string name="image_cache_provider_authority">com.nuvexa.drive.qa.imagecache.provider</string>
+    <string name="default_display_name_for_root_folder">Nuvexa Drive</string>
+
+    <!-- QA-only zero-login mode. The official public trial is temporary and must never back production. -->
+    <bool name="nuvexa_managed_mode">true</bool>
+    <string name="nuvexa_managed_provisioning_url" translatable="false">https://try.nextcloud.com/</string>
+    <string name="nuvexa_managed_provisioning_type" translatable="false">nextcloud_demo</string>
+    <bool name="disable_intro">true</bool>
+    <bool name="show_server_url_input">false</bool>
+    <bool name="show_provider_or_own_installation">false</bool>
 
     <bool name="logger_enabled">true</bool>
     <string name="dev_changelog">https://github.com/nextcloud/android/commits/master</string>
