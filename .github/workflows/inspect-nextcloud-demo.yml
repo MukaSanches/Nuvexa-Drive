@@ -17,10 +17,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f /tmp/cookies.txt
-          curl -fsSL -c /tmp/cookies.txt -b /tmp/cookies.txt https://try.nextcloud.com/ -o /tmp/index.html
-          curl -fsSL -c /tmp/cookies.txt -b /tmp/cookies.txt https://try.nextcloud.com/js/main.js -o /tmp/main.js
-          echo '--- MAIN.JS ---'
-          sed -n '1,320p' /tmp/main.js
-          echo '--- ENDPOINT CANDIDATES ---'
-          grep -Eo "['\"][^'\"]*(create|demo|access|instance|api|register|provision)[^'\"]*['\"]" /tmp/main.js | head -200 || true
+          curl -fsSL https://try.nextcloud.com/js/main.js -o /tmp/main.js
+          python3 - <<'PY'
+          import re
+          s=open('/tmp/main.js',encoding='utf-8').read()
+          needles=['axios','XMLHttpRequest','.post(','post:','/api','instance','access','create','csrf','demo']
+          seen=set()
+          for needle in needles:
+              print("\n###",needle)
+              for m in re.finditer(re.escape(needle),s,re.I):
+                  frag=s[max(0,m.start()-450):min(len(s),m.end()+700)]
+                  if frag not in seen:
+                      seen.add(frag)
+                      print(frag)
+                      print('---')
+                  if len(seen)>100:
+                      break
+          print("\n### quoted path/url candidates")
+          vals=set(re.findall(r'["\x27]([^"\x27]{1,220})["\x27]',s))
+          for v in sorted(vals):
+              lv=v.lower()
+              if any(k in lv for k in ('api','demo','instance','create','access','csrf','try.nextcloud','nextcloud.com')):
+                  print(v)
+          PY
