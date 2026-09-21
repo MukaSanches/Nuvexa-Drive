@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: nuvexa-bootstrap-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   bootstrap-build:
