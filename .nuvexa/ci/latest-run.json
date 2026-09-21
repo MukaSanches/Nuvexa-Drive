@@ -1,9 +1,8 @@
 {
-  "run_id": "35597967677",
+  "run_id": "35600629833",
   "run_attempt": "1",
   "workflow": "Nuvexa Bootstrap and Build",
-  "commit": "0f14ad317a8310c619f99e3ec892d892e52ed4d9",
+  "source_commit": "9db374f58a083e0e73440c17fd15e8790bb156a3",
   "status": "running",
-  "signed": false,
-  "run_url": "https://github.com/MukaSanches/Nuvexa-Drive/actions/runs/35597967677"
+  "run_url": "https://github.com/MukaSanches/Nuvexa-Drive/actions/runs/35600629833"
 }
