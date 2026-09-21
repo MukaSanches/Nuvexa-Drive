@@ -31,6 +31,10 @@
     <bool name="show_server_url_input">true</bool>
     <bool name="show_provider_or_own_installation">true</bool>
     <string name="provider_registration_server">https://www.nextcloud.com/register</string>
+    <!-- Nuvexa Managed Mode. Disabled in production until a permanent Nuvexa backend is deployed. -->
+    <bool name="nuvexa_managed_mode">false</bool>
+    <string name="nuvexa_managed_provisioning_url" translatable="false"></string>
+    <string name="nuvexa_managed_provisioning_type" translatable="false">nuvexa</string>
 
     <!-- specify built in proxy -->
     <string name="proxy_host"></string>
