@@ -117,6 +117,19 @@ def generate_launcher_assets(brand_source: Path) -> None:
 </vector>
 """,
     )
+    write(
+        APP / "src/main/res/mipmap-anydpi/ic_launcher_round.xml",
+        """<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Nuvexa Drive contributors -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background"/>
+    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+    <monochrome android:drawable="@drawable/nuvexa_monochrome"/>
+</adaptive-icon>
+""",
+    )
+
     adaptive = APP / "src/main/res/mipmap-anydpi/ic_launcher.xml"
     if adaptive.exists():
         text = adaptive.read_text(encoding="utf-8")
