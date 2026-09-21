@@ -28,6 +28,7 @@ import com.owncloud.android.R
 import java.io.File
 import java.text.DateFormat
 import java.util.Date
+import java.util.Locale
 
 class LocalDriveActivity : AppCompatActivity() {
     private lateinit var statusView: TextView
@@ -160,7 +161,7 @@ class LocalDriveActivity : AppCompatActivity() {
     private fun renderFiles(root: File) {
         fileList.removeAllViews()
         val entries = root.listFiles()
-            ?.sortedWith(compareByDescending<File> { it.isDirectory }.thenBy { it.name.lowercase() })
+            ?.sortedWith(compareByDescending<File> { it.isDirectory }.thenBy { it.name.lowercase(Locale.getDefault()) })
             .orEmpty()
 
         if (entries.isEmpty()) {
@@ -347,8 +348,8 @@ class LocalDriveActivity : AppCompatActivity() {
     private fun humanSize(bytes: Long): String =
         when {
             bytes < 1024L -> bytes.toString() + " B"
-            bytes < 1024L * 1024L -> String.format("%.1f KB", bytes / 1024.0)
-            bytes < 1024L * 1024L * 1024L -> String.format("%.1f MB", bytes / (1024.0 * 1024.0))
-            else -> String.format("%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0))
+            bytes < 1024L * 1024L -> String.format(Locale.getDefault(), "%.1f KB", bytes / 1024.0)
+            bytes < 1024L * 1024L * 1024L -> String.format(Locale.getDefault(), "%.1f MB", bytes / (1024.0 * 1024.0))
+            else -> String.format(Locale.getDefault(), "%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0))
         }
 }
