@@ -61,6 +61,7 @@ import com.owncloud.android.operations.e2e.E2EClientData;
 import com.owncloud.android.operations.e2e.E2EData;
 import com.owncloud.android.operations.e2e.E2EFiles;
 import com.owncloud.android.operations.upload.RemoteFileExistence;
+import com.owncloud.android.operations.upload.UploadVerificationPolicy;
 import com.owncloud.android.operations.upload.UploadFileException;
 import com.owncloud.android.operations.upload.UploadFileOperationExtensionsKt;
 import com.owncloud.android.utils.EncryptionUtils;
@@ -124,6 +125,8 @@ public class UploadFileOperation extends SyncOperation {
     public static final int CREATED_AS_INSTANT_PICTURE = 1;
     public static final int CREATED_AS_INSTANT_VIDEO = 2;
     public static final int MISSING_FILE_PERMISSION_NOTIFICATION_ID = 2501;
+    private static final int POST_UPLOAD_VERIFY_ATTEMPTS = 3;
+    private static final long POST_UPLOAD_VERIFY_DELAY_MS = 400L;
 
     /**
      * OCFile which is to be uploaded.
@@ -162,6 +165,7 @@ public class UploadFileOperation extends SyncOperation {
     private Context mContext;
 
     private UploadFileRemoteOperation mUploadOperation;
+    private RemoteFile mVerifiedRemoteFile;
 
     private RequestEntity mEntity;
 
@@ -1170,6 +1174,17 @@ public class UploadFileOperation extends SyncOperation {
                     result = mUploadOperation.execute(client);
                 }
 
+                // Nuvexa two-phase commit: transport success is not enough to
+                // perform destructive local actions. Re-read the remote object
+                // and verify its exact byte length first. This protects against
+                // lost responses, zero-byte/truncated objects and false-success
+                // states that otherwise leave uploads stuck or delete originals
+                // before the server copy is confirmed.
+                if (result.isSuccess() && !verifyNormalUpload(client, size)) {
+                    Log_OC.e(TAG, "remote verification failed after successful upload: " + getRemotePath());
+                    result = new RemoteOperationResult<>(ResultCode.UNKNOWN_ERROR);
+                }
+
                 // move local temporal file or original file to its corresponding
                 // location in the Nextcloud local folder
                 if (!result.isSuccess() && result.getHttpCode() == HttpStatus.SC_PRECONDITION_FAILED) {
@@ -1717,6 +1732,57 @@ public class UploadFileOperation extends SyncOperation {
     }
 
     /**
+     * Verifies a non-E2EE upload after the transport layer reports success.
+     *
+     * The check is intentionally retried a few times because some storage
+     * backends expose metadata with small eventual-consistency delays.
+     */
+    private boolean verifyNormalUpload(OwnCloudClient client, long expectedSize) {
+        mVerifiedRemoteFile = null;
+
+        for (int attempt = 1; attempt <= POST_UPLOAD_VERIFY_ATTEMPTS; attempt++) {
+            ReadFileRemoteOperation operation = new ReadFileRemoteOperation(getRemotePath());
+            RemoteOperationResult result = operation.execute(client);
+
+            if (result.isSuccess() && result.getData() != null && !result.getData().isEmpty()) {
+                Object data = result.getData().get(0);
+                if (data instanceof RemoteFile remoteFile) {
+                    long remoteSize = remoteFile.getLength();
+                    if (UploadVerificationPolicy.INSTANCE.matchesExpectedSize(expectedSize, remoteSize)) {
+                        mVerifiedRemoteFile = remoteFile;
+                        Log_OC.d(TAG, "remote upload verified: " + getRemotePath() + " size=" + remoteSize);
+                        return true;
+                    }
+
+                    Log_OC.w(
+                        TAG,
+                        "remote upload size mismatch for " + getRemotePath() +
+                            ": expected=" + expectedSize + ", remote=" + remoteSize
+                    );
+                }
+            } else {
+                Log_OC.w(
+                    TAG,
+                    "remote upload verification attempt " + attempt + " failed for " + getRemotePath() +
+                        ": " + result.getLogMessage()
+                );
+            }
+
+            if (attempt < POST_UPLOAD_VERIFY_ATTEMPTS) {
+                try {
+                    Thread.sleep(POST_UPLOAD_VERIFY_DELAY_MS * attempt);
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    Log_OC.w(TAG, "remote upload verification interrupted");
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Saves a OC File after a successful upload.
      * <p>
      * A PROPFIND is necessary to keep the props in the local database synchronized with the server, specially the
@@ -1745,13 +1811,19 @@ public class UploadFileOperation extends SyncOperation {
             path = getRemotePath();
         }
 
-        ReadFileRemoteOperation operation = new ReadFileRemoteOperation(path);
-        RemoteOperationResult result = operation.execute(client);
-        if (result.isSuccess()) {
-            updateOCFile(file, (RemoteFile) result.getData().get(0));
+        RemoteFile verifiedRemoteFile = mVerifiedRemoteFile;
+        if (verifiedRemoteFile != null && !encryptedAncestor) {
+            updateOCFile(file, verifiedRemoteFile);
             file.setLastSyncDateForProperties(syncDate);
         } else {
-            Log_OC.e(TAG, "Error reading properties of file after successful upload; this is gonna hurt...");
+            ReadFileRemoteOperation operation = new ReadFileRemoteOperation(path);
+            RemoteOperationResult result = operation.execute(client);
+            if (result.isSuccess() && result.getData() != null && !result.getData().isEmpty()) {
+                updateOCFile(file, (RemoteFile) result.getData().get(0));
+                file.setLastSyncDateForProperties(syncDate);
+            } else {
+                Log_OC.e(TAG, "Error reading properties of file after successful upload; metadata remains unconfirmed");
+            }
         }
 
         if (mWasRenamed) {
