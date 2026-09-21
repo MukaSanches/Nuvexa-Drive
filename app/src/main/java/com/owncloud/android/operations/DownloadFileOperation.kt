@@ -26,6 +26,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.DownloadFileRemoteOperation
+import com.owncloud.android.operations.download.DownloadVerificationPolicy
 import com.owncloud.android.utils.EncryptionUtils
 import com.owncloud.android.utils.FileExportUtils
 import com.owncloud.android.utils.FileStorageUtils
@@ -137,6 +138,18 @@ class DownloadFileOperation(
         val (downloadOp, downloadResult) = executeDownload(client, operationContext)
 
         if (!downloadResult.isSuccess) return downloadResult
+
+        // Nuvexa integrity gate: a transport-level success must not promote a
+        // truncated temporary file into the final destination. E2EE downloads
+        // are verified by their authenticated decryption path instead.
+        if (!file.isEncrypted && !DownloadVerificationPolicy.canPromote(file.fileLength, tmpFile.length())) {
+            Log_OC.e(
+                TAG,
+                "Downloaded temporary file size mismatch for ${file.remotePath}: " +
+                    "expected=${file.fileLength}, actual=${tmpFile.length()}"
+            )
+            return RemoteOperationResult(RemoteOperationResult.ResultCode.UNKNOWN_ERROR)
+        }
 
         timestampForModification = downloadOp.modificationTimestamp
         etag = downloadOp.etag
