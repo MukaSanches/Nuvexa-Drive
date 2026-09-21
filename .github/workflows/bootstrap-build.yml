@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   bootstrap-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
 
     steps:
@@ -24,6 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Import stable Nextcloud Android baseline
+        id: import
         if: ${{ !hashFiles('.nuvexa/bootstrap-complete') }}
         shell: bash
         run: |
@@ -37,9 +38,10 @@ jobs:
             /tmp/nextcloud-android/ ./
           python3 -m pip install --disable-pip-version-check pillow
           python3 .nuvexa/apply_branding.py
+          echo "did_import=true" >> "$GITHUB_OUTPUT"
 
       - name: Commit imported Nuvexa source
-        if: ${{ !hashFiles('.nuvexa/bootstrap-complete') }}
+        if: ${{ steps.import.outputs.did_import == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -57,14 +59,13 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v4
-
-      - name: Install Android platform
+      - name: Show Android runner inventory
         shell: bash
         run: |
           set -euo pipefail
-          sdkmanager "platforms;android-37" "build-tools;36.0.0" "platform-tools"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls -1 "$ANDROID_HOME/platforms" | tail -20
+          ls -1 "$ANDROID_HOME/build-tools" | tail -20
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
@@ -74,7 +75,6 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x gradlew
-          echo "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
           ./gradlew --no-daemon :app:testGenericDebugUnitTest :app:lintGenericDebug
 
       - name: Assemble generic release
