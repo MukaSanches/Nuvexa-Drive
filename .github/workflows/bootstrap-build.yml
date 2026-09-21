@@ -120,6 +120,17 @@ jobs:
           set -euo pipefail
           ./gradlew --no-daemon :app:assembleGenericRelease
 
+      - name: Assemble managed QA APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon :app:assembleQaDebug
+          mkdir -p dist
+          QA_APK="$(find app/build/outputs/apk/qa/debug -type f -name '*.apk' | head -n1)"
+          test -n "$QA_APK"
+          cp "$QA_APK" dist/Nuvexa-Drive-QA-AutoSetup.apk
+          sha256sum dist/Nuvexa-Drive-QA-AutoSetup.apk > dist/Nuvexa-Drive-QA-AutoSetup.apk.sha256
+
       - name: Prepare aligned unsigned APK and verification tooling
         shell: bash
         run: |
