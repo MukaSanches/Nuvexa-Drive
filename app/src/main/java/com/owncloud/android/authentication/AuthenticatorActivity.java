@@ -343,6 +343,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             }
             
             initServerPreFragment(savedInstanceState);
+
+            if (directLogin) {
+                applyManagedDirectLoginUi();
+            }
         }
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleEventObserver);
@@ -727,6 +731,26 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         } else {
             accountSetupBinding.scanQr.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Keeps managed direct-login flows on Nuvexa-branded progress UI instead of exposing
+     * the inherited server-address and QR-code setup controls.
+     */
+    private void applyManagedDirectLoginUi() {
+        if (accountSetupBinding == null) {
+            return;
+        }
+
+        accountSetupBinding.hostUrlFrame.setVisibility(View.GONE);
+        accountSetupBinding.hostUrlInputHelperText.setVisibility(View.GONE);
+        accountSetupBinding.scanQr.setVisibility(View.GONE);
+        accountSetupBinding.serversSpinner.setVisibility(View.GONE);
+        accountSetupBinding.authStatusText.setVisibility(View.GONE);
+
+        mServerStatusText = getString(R.string.nuvexa_managed_configuring);
+        mServerStatusIcon = R.drawable.progress_small;
+        showServerStatus();
     }
 
     /**
