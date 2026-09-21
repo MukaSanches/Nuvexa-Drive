@@ -42,19 +42,8 @@ def generate_launcher_assets(brand_source: Path) -> None:
     from PIL import Image
 
     image = Image.open(brand_source).convert("RGBA")
-    sizes = {
-        "mipmap-mdpi": 48,
-        "mipmap-hdpi": 72,
-        "mipmap-xhdpi": 96,
-        "mipmap-xxhdpi": 144,
-        "mipmap-xxxhdpi": 192,
-    }
-    for folder_name, size in sizes.items():
-        folder = APP / "src/main/res" / folder_name
-        folder.mkdir(parents=True, exist_ok=True)
-        image.resize((size, size), Image.Resampling.LANCZOS).save(
-            folder / "ic_launcher.png", format="PNG", optimize=True
-        )
+    # Nuvexa supports Android 9+ (API 28+), so adaptive launcher icons are available on every supported device.
+    # Do not generate legacy density PNGs: full-bleed square bitmaps violate Android launcher-icon lint rules.
 
     for png in APP.glob("src/**/ic_launcher*.png"):
         normalized = str(png).replace("\\", "/")
