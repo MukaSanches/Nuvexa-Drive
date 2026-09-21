@@ -15,3 +15,14 @@ Mandatory invariants:
 - Reinstall/re-login reconciliation must prevent blind re-upload of an existing library.
 
 These items are requirements. Individual mechanisms are only marked implemented after code and regression tests exist.
+
+
+## Implemented in the current hardening branch
+
+- **Two-phase normal upload completion:** transport success is followed by a remote metadata read and exact byte-length verification before local delete/move/copy behavior is allowed.
+- **Zero-byte/truncation guard:** a non-empty source cannot pass verification against a zero-byte or truncated remote object.
+- **Download promotion guard:** a known-size download remains temporary unless its byte length matches the expected remote size. E2EE continues to rely on authenticated decryption.
+- **In-flight Wi-Fi guard:** Wi-Fi-only is checked during transfer progress and the operation is cancelled into a delayed-for-Wi-Fi state if the network changes.
+- **Focused tests:** pure policies cover exact/zero/truncated sizes and Wi-Fi/mobile/metered transitions.
+
+These items are still release-gated until the complete CI and device/server validation matrix passes.
