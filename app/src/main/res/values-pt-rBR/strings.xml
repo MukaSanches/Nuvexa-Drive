@@ -1441,4 +1441,10 @@
         <item quantity="many">Exportações iniciadas (%d de arquivos)</item>
         <item quantity="other">Exportações iniciadas (%d arquivos)</item>
     </plurals>
+    <!-- Nuvexa Managed Mode -->
+    <string name="nuvexa_managed_configuring">Preparando seu Nuvexa Drive…</string>
+    <string name="nuvexa_managed_error">Não foi possível preparar seu espaço agora.</string>
+    <string name="nuvexa_managed_retry">Tentar novamente</string>
+    <string name="nuvexa_managed_invalid_response">O serviço de armazenamento retornou uma resposta inválida.</string>
+
 </resources>
