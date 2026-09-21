@@ -21,7 +21,7 @@ Current baseline includes file browsing, upload/download, folders, search, favor
 
 Nuvexa must never silently lose, corrupt, endlessly retransmit or duplicate a file because of network loss, process death or restart. Every Nuvexa-specific reliability change must be covered by an appropriate regression test before it is described as complete.
 
-Implemented Nuvexa-specific hardening currently includes an active-transfer Network Guard that re-checks Wi-Fi-only, charging-only and power-saver policy while an upload is actually transferring data, with unit regression coverage.
+Implemented Nuvexa-specific hardening currently includes an active-transfer Network Guard that re-checks Wi-Fi-only, charging-only and power-saver policy while an upload is actually transferring data, plus two-phase remote-size verification before destructive local upload behavior. Both have unit regression coverage.
 
 See RELIABILITY.md and TESTING.md.
 
