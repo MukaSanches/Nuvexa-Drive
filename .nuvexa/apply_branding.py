@@ -131,9 +131,7 @@ def generate_launcher_assets(brand_source: Path) -> None:
         )
         adaptive.write_text(text, encoding="utf-8")
 
-    write(
-        APP / "src/main/res/drawable/nextcloud_logo.xml",
-        """<?xml version="1.0" encoding="utf-8"?>
+    brand_logo_xml = """<?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-FileCopyrightText: 2026 Nuvexa Drive -->
 <!-- SPDX-License-Identifier: LicenseRef-Nuvexa-Brand -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
@@ -143,8 +141,10 @@ def generate_launcher_assets(brand_source: Path) -> None:
             android:src="@drawable/nuvexa_logo" />
     </item>
 </layer-list>
-""",
-    )
+"""
+    write(APP / "src/main/res/drawable/logo.xml", brand_logo_xml)
+    write(APP / "src/main/res/drawable/nextcloud_logo.xml", brand_logo_xml)
+    write(APP / "src/main/res/drawable/nextcloud_splash_logo.xml", brand_logo_xml)
 
 
 def patch_gradle() -> None:
